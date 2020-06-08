@@ -33,11 +33,12 @@
   tasks:
   - name: http
     package:
-      name: httpie
+      name: httpd
       state: latest
   - name: install HAProxy
     yum:
-      name=haproxy state=latest
+      name: haproxy 
+      state: latest
   - name: enable HAProxy
     service:
       name: haproxy
@@ -72,7 +73,7 @@
       path: /usr/share/tomcat/webapps/ROOT
       state: directory
 
-  - name: copy static index.html to tomcat webapps/ansible/index.html
+  - name: copy static index.html to tomcat webapps/ROOT/index.html
     template:
       src: index.html.j2
       dest: /usr/share/tomcat/webapps/ROOT/index.html
@@ -89,10 +90,10 @@
   become: true
 
   tasks:
-  - name: copy static index.html to tomcat webapps/ansible/index.html
+  - name: copy static index.html to tomcat webapps/ROOT/index.html
     template:
       src: index.html.app1
-      dest: /usr/share/tomcat/webapps/ansible/index.html
+      dest: /usr/share/tomcat/webapps/ROOT/index.html
 
 - name: index.html on app 1
   hosts: app2
@@ -100,10 +101,10 @@
   become: true
 
   tasks:
-  - name: copy static index.html to tomcat webapps/ansible/index.html
+  - name: copy static index.html to tomcat webapps/ROOT/index.html
     template:
       src: index.html.app2
-      dest: /usr/share/tomcat/webapps/ansible/index.html
+      dest: /usr/share/tomcat/webapps/ROOT/index.html
 
 - name: deploy postgres
   hosts: apps
