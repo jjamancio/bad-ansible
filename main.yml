@@ -107,7 +107,6 @@
       dest: /usr/share/tomcat/webapps/ROOT/index.html
 
 - name: deploy postgres
-  hosts: apps
   gather_facts: false
   become: true
   hosts: appdbs
@@ -115,27 +114,52 @@
   - name: install progress
     command: "yum install -y postgresql-server"
 
+# Variable configuration.
+- include_tasks: variables.yml
+
+- name: Ensure PostgreSQL data directory exists.
+  file:
+    path: "{{ postgresql_data_dir }}"
+    owner: "{{ postgresql_user }}"
+    group: "{{ postgresql_group }}"
+    state: directory
+    mode: 0700
+  
+- name: Check if PostgreSQL database is initialized.
+  stat:
+    path: "{{ postgresql_data_dir }}/PG_VERSION"
+    register: pgdata_dir_version
+
+- name: Ensure PostgreSQL database is initialized.
+  command: "{{ postgresql_bin_path }}/initdb -D {{ postgresql_data_dir }}"
+  when: not pgdata_dir_version.stat.exists
+  become: true
+  become_user: "{{ postgresql_user }}"
+  # See: https://github.com/ansible/ansible/issues/16048#issuecomment-229012509
+  vars:
+    ansible_ssh_pipelining: true
+
   #- name: install postgres
   #  yum:
   #    name: postgresql-server
   #    state: latest
-  - name: enable apache at boot
-    service:
-      name: postgresql
-      enabled: yes
-  - name: tell user to finish setting up postgres
-    debug:
-      msg: "Either uncomment the postgres setup or manually login and initialize"
+##  - name: enable postgres at boot
+##    service:
+##      name: postgresql
+##      enabled: yes
+##  - name: tell user to finish setting up postgres
+##    debug:
+##      msg: "Either uncomment the postgres setup or manually login and initialize"
 
  # only run the next 2 tasks once!
 #  - name: initilize postgres
 #    command: postgresql-setup initdb
 #  - name: initilize postgres some more
 #    command: chkconfig postgresql on
-  - name: start postgres
-    service:
-      name: postgresql.service
-      state: started
+##  - name: start postgres
+##    service:
+##      name: postgresql.service
+##      state: started
 
 - name: deploy apache
   hosts: apps
