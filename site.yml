@@ -1,6 +1,6 @@
 ---
-    - import_playbook: configure_repos.yml
-    - import_playbook: deploy_haproxy.yml
-    - import_playbook: deploy_tomcat.yml
-    - import_playbook: deploy_web.yml
-    - import_playbook: deploy_db.yml
+#    - import_playbook: configure_repos.yml
+    - import_playbook: playbooks/deploy_haproxy.yml
+    - import_playbook: playbooks/deploy_tomcat.yml
+    - import_playbook: playbooks/deploy_web.yml
+    - import_playbook: playbooks/deploy_db.yml

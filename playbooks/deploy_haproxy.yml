@@ -1,11 +1,10 @@
 ---
-    hosts: frontends
-    gather_facts: false # remove later! speeds up testing
-    become: true
+- hosts: frontends
+  gather_facts: false # remove later! speeds up testing
+  become: true
 
+  tasks:
     - name: deploy haproxy
-    tasks:
-    - name: http
       package:
         name: httpd
         state: latest
