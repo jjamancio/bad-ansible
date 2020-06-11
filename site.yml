@@ -1,5 +1,5 @@
 ---
-#    - import_playbook: configure_repos.yml
+    - import_playbook: configure_repos.yml
     - import_playbook: playbooks/deploy_haproxy.yml
     - import_playbook: playbooks/deploy_tomcat.yml
     - import_playbook: playbooks/deploy_web.yml
